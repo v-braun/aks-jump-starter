@@ -12,7 +12,7 @@ By [v-braun - viktor-braun.de](https://viktor-braun.de).
 
 
 ## Description
-This Terraform Module bootstraps a AKS (Azure Kubernetes Service) with an installed Traefik Ingress and a public available Traefik Dashboard.  
+This Terraform Module bootstraps an AKS (Azure Kubernetes Service) with an installed Traefik Ingress and a public available Traefik Dashboard.  
 
 
 ## Installation
