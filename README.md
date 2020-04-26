@@ -7,7 +7,7 @@ By [v-braun - viktor-braun.de](https://viktor-braun.de).
 ![PR welcome](https://img.shields.io/badge/PR-welcome-green.svg?style=flat-square)
 
 <p align="center">
-<img width="70%" src="https://github.com/v-braun/aks-jump-starter/blob/master/resources/aks-jump-starter.png?raw=true" alt="aks-jump-starter" />
+<img width="90%" src="https://github.com/v-braun/aks-jump-starter/blob/master/resources/aks-jump-starter.png?raw=true" alt="aks-jump-starter" />
 </p>
 
 
