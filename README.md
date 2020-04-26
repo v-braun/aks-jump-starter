@@ -17,23 +17,64 @@ This Terraform Module bootstraps an AKS (Azure Kubernetes Service) with an insta
 
 ## Installation
 
-```
-install aks-jump-starter
+To install this module, simply reference this repo
+```terraform
+module "aks" {
+  source = "github.com/v-braun/aks-jump-starter"
+
+  # your configurations here ...
+}
 ```
 
 
 ## Usage
+See the parameters of this module below
 
-```
-use aks-jump-starter
-```
+```terraform
+module "aks" {
+  source = "github.com/v-braun/aks-jump-starter"
 
-## Configuration
+  # all azure resources will be prefixed with this value
+  prefix = var.prefix
+  
+  # default azure resources location
+  location = "westeurope"
+  
+  # additional tags added to all resource (as a map)
+  tags = var.tags
 
-```
-configure aks-jump-starter
-```
+  # AKS node count
+  node_count = "1"
+  
+  # AKS node pricing tier
+  node_size = "Standard_B2ms"
+  
+  # AKS has to be connected to a subnet within a VNet
+  # specify here the address ranges
+  vnet_address_range = "15.0.0.0/8"
+  subnet_address_range = "15.0.0.0/16"
+  
+  # service principal credentials
+  service_principal = {
+    client_id = var.client_id
+    client_secret = var.client_secret
+    subscription_id = var.subscription_id
+    tenant_id = var.tenant_id
+  }
 
+  # scale set admin user name and pub key
+  admin = {
+    name   = var.admin_user
+    pubkey = file(var.admin_pubkey)
+  }
+
+  # domain to the traefik dashboard (traefik.your-domain.here)
+  dashboard_host = var.dashboard_host
+  
+  # htpaswd generated basic auth ky (usr:pwdhash) for the dashboard authentication
+  traefik_dashboard_htpaswd = var.traefik_dashboard_htpaswd
+}
+```
 
 
 ## Authors
