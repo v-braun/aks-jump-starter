@@ -54,6 +54,10 @@ resource "helm_release" "traefik" {
     name  = "authSecretName"
     value = kubernetes_secret.dashboard_auth.metadata.0.name
   }
+  set {
+    name  = "podSecurityContext.fsGroup"
+    value = "null"
+  }
   
   depends_on = [kubernetes_cluster_role_binding.tiller, kubernetes_secret.dashboard_auth]
 }
