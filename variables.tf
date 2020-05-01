@@ -60,13 +60,13 @@ variable "traefik_dashboard_htpaswd" {
   description = "htpaswd generated credentials for the traefik dashboard ui"
 }
 
-variable "tls_letsencrypt_mail" {
+variable "traefik_tls_letsencrypt_mail" {
   type = string
   description = "TLS letsencrypt mail address"
   default = "foo@you.com"
 }
 
-variable "tls_letsencrypt_caserver" {
+variable "traefik_tls_letsencrypt_caserver" {
   type = string
   description = "TLS letsencrypt mail address"
   default = "https://acme-staging-v02.api.letsencrypt.org/directory"

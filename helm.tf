@@ -19,9 +19,9 @@ locals{
   args = [
     "--providers.kubernetesingress",
     "--certificatesresolvers.default.acme.tlschallenge",
-    "--certificatesresolvers.default.acme.email=${var.tls_letsencrypt_mail}",
+    "--certificatesresolvers.default.acme.email=${var.traefik_tls_letsencrypt_mail}",
     "--certificatesresolvers.default.acme.storage=/data/acme.json",
-    "--certificatesresolvers.default.acme.caserver=${var.tls_letsencrypt_caserver}"
+    "--certificatesresolvers.default.acme.caserver=${var.traefik_tls_letsencrypt_caserver}"
   ]
 }
 

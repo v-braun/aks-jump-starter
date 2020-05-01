@@ -75,11 +75,11 @@ module "aks" {
   traefik_dashboard_htpaswd = var.traefik_dashboard_htpaswd
 
   # email adress that should be used for let's encrypt
-  tls_letsencrypt_mail = "foo@you.com"
+  traefik_tls_letsencrypt_mail = "foo@you.com"
 
   # the let's encrypt server (default is the staging server)
   # set it to: https://acme-v02.api.letsencrypt.org/directory to use the production server
-  tls_letsencrypt_caserver = "https://acme-staging-v02.api.letsencrypt.org/directory"
+  traefik_tls_letsencrypt_caserver = "https://acme-staging-v02.api.letsencrypt.org/directory"
 }
 ```
 
