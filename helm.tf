@@ -20,7 +20,7 @@ locals{
     "--providers.kubernetesingress",
     "--certificatesresolvers.default.acme.tlschallenge",
     "--certificatesresolvers.default.acme.email=${var.tls_letsencrypt_mail}",
-    "--certificatesresolvers.default.acme.storage=acme.json",
+    "--certificatesresolvers.default.acme.storage=/data/acme.json",
     "--certificatesresolvers.default.acme.caserver=${var.tls_letsencrypt_caserver}"
   ]
 }
