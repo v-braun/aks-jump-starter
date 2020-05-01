@@ -15,6 +15,16 @@ data "helm_repository" "traefik" {
   url  = "https://raw.githubusercontent.com/v-braun/traefik-helm-chart/master/"
 }
 
+locals{
+  args = [
+    "--providers.kubernetesingress",
+    "--certificatesresolvers.default.acme.tlschallenge",
+    "--certificatesresolvers.default.acme.email=${var.tls_letsencrypt_mail}",
+    "--certificatesresolvers.default.acme.storage=acme.json",
+    "--certificatesresolvers.default.acme.caserver=${var.tls_letsencrypt_caserver}"
+  ]
+}
+
 resource "helm_release" "traefik" {
   name      = "traefik"
   chart     = "vbr/vbr-traefik"
@@ -26,7 +36,7 @@ resource "helm_release" "traefik" {
   }
   set {
     name  = "traefik.additionalArguments"
-    value = "{--providers.kubernetesingress}"
+    value = "{${join(",", local.args)}}"
   }
   set_string {
     name  = "traefik.service.annotations.service\\.beta\\.kubernetes\\.io/azure-load-balancer-resource-group"
