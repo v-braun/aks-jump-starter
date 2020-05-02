@@ -1,0 +1,36 @@
+dashboard-route:
+  spec:
+    entryPoints:
+      - websecure    
+    routes:
+    - kind: Rule
+      services:
+      - name: api@internal
+        kind: TraefikService
+    tls:
+      certResolver: letsencrypt
+
+https-redirect-route:
+  spec:
+    entryPoints:
+      - web
+    routes:
+    - kind: Rule
+      match: HostRegexp(`{any:.+}`)
+      services:
+        - name: noop@internal
+          kind: TraefikService
+      middlewares:
+        - name: https-redirect-middleware
+
+https-redirect-middleware:
+  spec:
+    redirectScheme:
+      scheme: https
+      permanent: true
+
+basic-auth-middleware:
+  spec:
+    basicAuth:
+      # secret: kubernetes_secret.dashboard_auth.metadata.0.name
+

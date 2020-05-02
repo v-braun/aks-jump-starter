@@ -1,0 +1,15 @@
+dependencies:
+- name: ingress-route
+  repository: https://raw.githubusercontent.com/v-braun/traefik-ingress-route-chart/master/ingress-route/
+  version: 1.0.0
+- name: ingress-route
+  repository: https://raw.githubusercontent.com/v-braun/traefik-ingress-route-chart/master/ingress-route/
+  version: 1.0.0
+- name: middleware
+  repository: https://raw.githubusercontent.com/v-braun/traefik-middleware-chart/master/middleware/
+  version: 1.0.0
+- name: middleware
+  repository: https://raw.githubusercontent.com/v-braun/traefik-middleware-chart/master/middleware/
+  version: 1.0.0
+digest: sha256:80e31fd734caffae59c056b9fb56e4ec1fc2ba37baa0889616a7f629a12ab3dc
+generated: "2020-05-02T23:58:55.224478+02:00"

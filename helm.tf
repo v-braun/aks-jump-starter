@@ -90,36 +90,23 @@ resource "null_resource" "wait_traefik" {
 }
 
 
-data "helm_repository" "ingress_route" {
-  name = "traefik-ingress-route"
-  url  = "https://raw.githubusercontent.com/v-braun/traefik-ingress-route-chart/master/ingress-route/"
-}
-data "helm_repository" "middleware" {
-  name = "traefik-middleware"
-  url  = "https://raw.githubusercontent.com/v-braun/traefik-middleware-chart/master/traefik-middleware/"
-}
-
 resource "helm_release" "traefik_dashboard" {
-  name      = "dashboard"
-  chart     = "ingress-route"
-  repository = data.helm_repository.ingress_route.metadata[0].name
-  version    = "1.0.0"
+  name      = "aks-jump-starter"
+  chart     = "./helm"
 
   values = [
-<<EOF
-spec:
-  entryPoints:
-    - websecure
-  routes:
-  - match: Host(`${var.dashboard_host}`)
-    kind: Rule
-    services:
-    - name: api@internal
-      kind: TraefikService
-  tls:
-    certResolver: letsencrypt
-EOF
+    file("./helm/values.yaml")
   ]
+
+  set {
+    name = "public-dashboard.spec.routes[0].match"
+    value = "Host(`${var.dashboard_host}`)"
+  }
+
+  set {
+    name = "public-dashboard-auth.spec.basicAuth.secret"
+    value = kubernetes_secret.dashboard_auth.metadata.0.name
+  }
 
   depends_on = [null_resource.wait_traefik]
 }
