@@ -113,7 +113,7 @@ dashboard-route:
 
 basic-auth-middleware:
   spec:
-    basicAuth: {}
+    basicAuth: 
       secret: ${kubernetes_secret.dashboard_auth.metadata.0.name}
 EOF
   ]
