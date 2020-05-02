@@ -95,13 +95,23 @@ resource "helm_release" "traefik_dashboard" {
   chart     = "${path.module}/helm"
 
   values = [
-    file("${path.module}/helm/values.yaml")
-  ]
+    file("${path.module}/helm/values.yaml"),
 
-  set {
-    name = "dashboard-route.spec.routes[0].match"
-    value = "Host(`${var.dashboard_host}`)"
-  }
+    <<EOF
+dashboard-route:
+  spec:
+    entryPoints:
+      - websecure    
+    routes:
+    - match: "Host(`${var.dashboard_host}`)"
+      kind: Rule
+      services:
+      - name: api@internal
+        kind: TraefikService
+    tls:
+      certResolver: letsencrypt
+EOF
+  ]
 
   set {
     name = "basic-auth-middleware.spec.basicAuth.secret"
