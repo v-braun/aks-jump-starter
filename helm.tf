@@ -110,13 +110,14 @@ dashboard-route:
         kind: TraefikService
     tls:
       certResolver: letsencrypt
+
+basic-auth-middleware:
+  spec:
+    basicAuth: {}
+      secret: ${kubernetes_secret.dashboard_auth.metadata.0.name}
 EOF
   ]
 
-  set {
-    name = "basic-auth-middleware.spec.basicAuth.secret"
-    value = kubernetes_secret.dashboard_auth.metadata.0.name
-  }
 
   depends_on = [null_resource.wait_traefik]
 }
