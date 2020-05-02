@@ -100,8 +100,8 @@ data "helm_repository" "middleware" {
 }
 
 resource "helm_release" "traefik_dashboard" {
-  name      = "ingress-route"
-  chart     = "traefik-middleware"
+  name      = "dashboard"
+  chart     = "ingress-route"
   repository = data.helm_repository.ingress_route.metadata[0].name
   version    = "1.0.0"
 
