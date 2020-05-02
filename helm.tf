@@ -54,12 +54,12 @@ resource "helm_release" "traefik" {
     name  = "authSecretName"
     value = kubernetes_secret.dashboard_auth.metadata.0.name
   }
-  # there is a permission issue with managed disks
-  # see here: https://github.com/containous/traefik-helm-chart/issues/164
-  # new spawned pods will not start, so we use azurefile
+  # # there is a permission issue with managed disks
+  # # see here: https://github.com/containous/traefik-helm-chart/issues/164
+  # # new spawned pods will not start
   set {
-    name  = "traefik.persistence.storageClass"
-    value = "azurefile"
+    name  = "traefik.podSecurityContext.fsGroup"
+    value = "null"
   }
   
   depends_on = [kubernetes_cluster_role_binding.tiller, kubernetes_secret.dashboard_auth]
