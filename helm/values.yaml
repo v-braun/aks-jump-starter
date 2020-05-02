@@ -21,7 +21,7 @@ https-redirect-route:
         - name: noop@internal
           kind: TraefikService
       middlewares:
-        - name: https-redirect-middleware
+        - name: aks-jump-starter-https-redirect-middleware
 
 https-redirect-middleware:
   spec:
