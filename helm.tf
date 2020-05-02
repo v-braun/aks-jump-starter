@@ -92,7 +92,7 @@ resource "null_resource" "wait_traefik" {
 
 resource "helm_release" "traefik_dashboard" {
   name      = "aks-jump-starter"
-  chart     = "./helm"
+  chart     = "${path.module}/helm"
 
   values = [
     file("${path.module}/helm/values.yaml")
