@@ -95,7 +95,7 @@ resource "helm_release" "traefik_dashboard" {
   chart     = "./helm"
 
   values = [
-    file("./helm/values.yaml")
+    file("${path.module}/helm/values.yaml")
   ]
 
   set {
