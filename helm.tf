@@ -62,6 +62,22 @@ resource "helm_release" "traefik" {
     name  = "traefik.podSecurityContext.fsGroup"
     value = "null"
   }
+  set {
+    name  = "traefik.securityContext.readOnlyRootFilesystem"
+    value = "false"
+  }
+  set {
+    name  = "traefik.securityContext.runAsGroup"
+    value = "0"
+  }
+  set {
+    name  = "traefik.securityContext.runAsUser"
+    value = "0"
+  }
+  set {
+    name  = "traefik.securityContext.runAsNonRoot"
+    value = "false"
+  }
   
   depends_on = [kubernetes_cluster_role_binding.tiller, kubernetes_secret.dashboard_auth]
 }
