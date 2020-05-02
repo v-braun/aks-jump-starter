@@ -99,12 +99,12 @@ resource "helm_release" "traefik_dashboard" {
   ]
 
   set {
-    name = "public-dashboard.spec.routes[0].match"
+    name = "dashboard-route.spec.routes[0].match"
     value = "Host(`${var.dashboard_host}`)"
   }
 
   set {
-    name = "public-dashboard-auth.spec.basicAuth.secret"
+    name = "basic-auth-middleware.spec.basicAuth.secret"
     value = kubernetes_secret.dashboard_auth.metadata.0.name
   }
 
