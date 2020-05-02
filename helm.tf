@@ -83,7 +83,7 @@ resource "null_resource" "wait_traefik" {
   }
 
   provisioner "local-exec" {
-    command = "sleep 1m"
+    command = "sleep 90"
   }
 
   depends_on = [helm_release.traefik]
