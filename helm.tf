@@ -11,73 +11,124 @@ provider "helm" {
 }
 
 data "helm_repository" "traefik" {
-  name = "vbr"
-  url  = "https://raw.githubusercontent.com/v-braun/traefik-helm-chart/master/"
+  name = "traefik"
+  url  = "https://containous.github.io/traefik-helm-chart"
 }
 
 locals{
   args = [
-    "--providers.kubernetesingress",
-    "--certificatesresolvers.default.acme.tlschallenge",
-    "--certificatesresolvers.default.acme.email=${var.traefik_tls_letsencrypt_mail}",
-    "--certificatesresolvers.default.acme.storage=/data/acme.json",
-    "--certificatesresolvers.default.acme.caserver=${var.traefik_tls_letsencrypt_caserver}"
+    # "--providers.kubernetesingress",
+    "--certificatesresolvers.letsencrypt.acme.tlschallenge",
+    "--certificatesresolvers.letsencrypt.acme.email=${var.traefik_tls_letsencrypt_mail}",
+    "--certificatesresolvers.letsencrypt.acme.storage=/data/acme.json",
+    "--certificatesresolvers.letsencrypt.acme.caserver=${var.traefik_tls_letsencrypt_caserver}"
   ]
 }
 
 resource "helm_release" "traefik" {
   name      = "traefik"
-  chart     = "vbr-traefik"
+  chart     = "traefik/traefik"
   repository = data.helm_repository.traefik.metadata[0].name
-  version    = "1.0.1"
+  version    = "8.1.0"
 
   set {
-    name  = "traefik.persistence.enabled"
+    name  = "persistence.enabled"
     value = "true"
   }
   set {
-    name  = "traefik.additionalArguments"
+    name  = "additionalArguments"
     value = "{${join(",", local.args)}}"
   }
   set_string {
-    name  = "traefik.service.annotations.service\\.beta\\.kubernetes\\.io/azure-load-balancer-resource-group"
+    name  = "service.annotations.service\\.beta\\.kubernetes\\.io/azure-load-balancer-resource-group"
     value = azurerm_resource_group.aks.name
   }
   set {
-    name  = "traefik.service.spec.loadBalancerIP"
+    name  = "service.spec.loadBalancerIP"
     value = azurerm_public_ip.external_ingress.ip_address
   }
-  set {
-    name  = "publicHost"
-    value = var.dashboard_host
-  }
-  set {
-    name  = "authSecretName"
-    value = kubernetes_secret.dashboard_auth.metadata.0.name
-  }
+
   # # there is a permission issue with managed disks
   # # see here: https://github.com/containous/traefik-helm-chart/issues/164
   # # new spawned pods will not start
   set {
-    name  = "traefik.podSecurityContext.fsGroup"
+    name  = "podSecurityContext.fsGroup"
     value = "null"
   }
   set {
-    name  = "traefik.securityContext.readOnlyRootFilesystem"
+    name  = "securityContext.readOnlyRootFilesystem"
     value = "false"
   }
   set {
-    name  = "traefik.securityContext.runAsGroup"
+    name  = "securityContext.runAsGroup"
     value = "0"
   }
   set {
-    name  = "traefik.securityContext.runAsUser"
+    name  = "securityContext.runAsUser"
     value = "0"
   }
   set {
-    name  = "traefik.securityContext.runAsNonRoot"
+    name  = "securityContext.runAsNonRoot"
     value = "false"
   }
   
   depends_on = [kubernetes_cluster_role_binding.tiller, kubernetes_secret.dashboard_auth]
 }
+
+# traefik need a while to bootup and should be started before deploy 
+# ingressroutes otherwise the letsencrypt generation will fail
+resource "null_resource" "wait_traefik" {
+  triggers = {
+    always_run = timestamp()
+  }
+
+  provisioner "local-exec" {
+    command = "sleep 1m"
+  }
+
+  depends_on = [helm_release.traefik]
+}
+
+
+data "helm_repository" "ingress_route" {
+  name = "traefik-ingress-route"
+  url  = "https://raw.githubusercontent.com/v-braun/traefik-ingress-route-chart/master/ingress-route/"
+}
+data "helm_repository" "middleware" {
+  name = "traefik-middleware"
+  url  = "https://raw.githubusercontent.com/v-braun/traefik-middleware-chart/master/traefik-middleware/"
+}
+
+resource "helm_release" "traefik_dashboard" {
+  name      = "ingress-route"
+  chart     = "traefik-middleware"
+  repository = data.helm_repository.ingress_route.metadata[0].name
+  version    = "1.0.0"
+
+  values = [
+<<EOF
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`${var.dashboard_host}`)
+    kind: Rule
+    services:
+    - name: api@internal
+      kind: TraefikService
+  tls:
+    certResolver: letsencrypt
+EOF
+  ]
+
+  depends_on = [null_resource.wait_traefik]
+}
+
+  # set {
+  #   name  = "publicHost"
+  #   value = var.dashboard_host
+  # }
+  # set {
+  #   name  = "authSecretName"
+  #   value = kubernetes_secret.dashboard_auth.metadata.0.name
+  # }
