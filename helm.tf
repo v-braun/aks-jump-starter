@@ -27,8 +27,9 @@ locals{
 
 resource "helm_release" "traefik" {
   name      = "traefik"
-  chart     = "vbr/vbr-traefik"
+  chart     = "vbr-traefik"
   repository = data.helm_repository.traefik.metadata[0].name
+  version    = "1.0.1"
 
   set {
     name  = "traefik.persistence.enabled"
