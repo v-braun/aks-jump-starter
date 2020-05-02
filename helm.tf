@@ -27,7 +27,7 @@ locals{
 
 resource "helm_release" "traefik" {
   name      = "traefik"
-  chart     = "traefik/traefik"
+  chart     = "traefik"
   repository = data.helm_repository.traefik.metadata[0].name
   version    = "8.1.0"
 
