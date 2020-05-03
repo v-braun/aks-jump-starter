@@ -108,6 +108,8 @@ dashboard-route:
       services:
       - name: api@internal
         kind: TraefikService
+      middlewares:
+        - name: aks-jump-starter-basic-auth-middleware        
     tls:
       certResolver: letsencrypt
 
