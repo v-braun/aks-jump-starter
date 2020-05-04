@@ -79,7 +79,7 @@ resource "helm_release" "traefik" {
 # ingressroutes otherwise the letsencrypt generation will fail
 resource "null_resource" "wait_traefik" {
   triggers = {
-    always_run = "${helm_release.traefik.name}-${helm_release.traefik.revision}"
+    always_run = "${helm_release.traefik.metadata.name}-${helm_release.traefik.metadata.revision}"
   }
 
   provisioner "local-exec" {
