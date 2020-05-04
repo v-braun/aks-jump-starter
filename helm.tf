@@ -120,7 +120,7 @@ basic-auth-middleware:
 EOF
   ]
 
-
+  ignore_changes = [chart]
   depends_on = [null_resource.wait_traefik]
 }
 
